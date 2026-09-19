@@ -1,132 +1,50 @@
-class LibraryMember {
-    int borrowed;
 
-    LibraryMember(String id, int limit) {}
-
-    void borrowBook() {
-        borrowed++;
-    }
-
-    int getBooksBorrowed() {
-        return borrowed;
-    }
-
-    void displayInfo() {
-        System.out.println(
-            "General Member | Books Borrowed: " + borrowed
-        );
-    }
+interface Printable {
+    String printLabel();
 }
 
-class StudentMember extends LibraryMember {
-    String course;
+class PackageBox implements Printable {
+    private String trackingId;
 
-    StudentMember(String id, int limit, String course) {
-        super(id, limit);
-        this.course = course;
+    public PackageBox(String trackingId) {
+        this.trackingId = trackingId;
     }
 
     @Override
-    void displayInfo() {
-        System.out.println(
-            "Student Member | Course: " + course +
-            " | Books Borrowed: " + borrowed
-        );
+    public String printLabel() {
+        return "Package label: " + trackingId;
     }
 }
 
-class HonorsStudentMember extends StudentMember {
-    int bonusLimit;
+class Invoice implements Printable {
+    private String invoiceNumber;
 
-    HonorsStudentMember(String id, int limit,
-                        String course, int bonusLimit) {
-        super(id, limit, course);
-        this.bonusLimit = bonusLimit;
+    public Invoice(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     @Override
-    void displayInfo() {
-        System.out.println(
-            "Honors Student Member | Course: " + course +
-            " | Bonus Limit: " + bonusLimit +
-            " | Books Borrowed: " + borrowed
-        );
-    }
-}
-
-class FacultyMember extends LibraryMember {
-    String department;
-
-    FacultyMember(String id, int limit, String department) {
-        super(id, limit);
-        this.department = department;
-    }
-
-    @Override
-    void displayInfo() {
-        System.out.println(
-            "Faculty Member | Department: " + department +
-            " | Books Borrowed: " + borrowed
-        );
+    public String printLabel() {
+        return "Invoice label: " + invoiceNumber;
     }
 }
 
 public class M2 {
 
-    static String classifyGeneration(LibraryMember m) {
-        if (m instanceof HonorsStudentMember)
-            return "Multilevel descendant (3 generations deep)";
-
-        if (m instanceof FacultyMember)
-            return "Hierarchical sibling (independent branch)";
-
-        return "General Member";
-    }
-
-    static int getTotalBooksBorrowed(LibraryMember[] members) {
-        int total = 0;
-
-        for (LibraryMember m : members)
-            total += m.getBooksBorrowed();
-
-        return total;
+    static void printAll(Printable[] items) {
+        for (Printable item : items) {
+            System.out.println(item.printLabel());
+        }
     }
 
     public static void main(String[] args) {
 
-        LibraryMember general =
-            new LibraryMember("STU1", 3);
+        PackageBox p = new PackageBox("TRK-88");
+        Invoice i = new Invoice("INV-42");
 
-        StudentMember student =
-            new StudentMember("STU2", 3, "CSE");
+        System.out.println(p.printLabel());
+        System.out.println(i.printLabel());
 
-        HonorsStudentMember honors =
-            new HonorsStudentMember("STU3", 3, "ECE", 2);
-
-        FacultyMember faculty =
-            new FacultyMember("STU4", 5, "Physics");
-
-        general.displayInfo();
-        student.displayInfo();
-        honors.displayInfo();
-        faculty.displayInfo();
-
-        System.out.println(classifyGeneration(honors));
-        System.out.println(classifyGeneration(faculty));
-
-        student.borrowBook();
-        student.borrowBook();
-
-        honors.borrowBook();
-
-        faculty.borrowBook();
-        faculty.borrowBook();
-        faculty.borrowBook();
-
-        LibraryMember[] members = {
-            student, honors, faculty
-        };
-
-        System.out.println(getTotalBooksBorrowed(members));
+        printAll(new Printable[]{p, i});
     }
 }

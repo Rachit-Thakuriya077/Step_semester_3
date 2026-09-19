@@ -1,114 +1,64 @@
-class LibraryMember {
-    static int count = 0;
 
-    final String memberNumber;
+abstract class DeliveryNote {
 
-    int borrowLimit;
-    int borrowed;
+    public abstract String confirmDelivery();
 
-    LibraryMember(int limit) {
-        borrowLimit = limit;
-        memberNumber = "LIB-" + (++count + 100);
-    }
-
-    void borrowBook() {
-        if (borrowed < borrowLimit)
-            borrowed++;
-    }
-
-    void borrowBook(String genre) {
-        borrowBook();
-    }
-
-    int getBooksBorrowed() {
-        return borrowed;
-    }
-
-    static boolean isValidRenewalCode(String code) {
-
-        if (code == null || code.length() != 4)
-            return false;
-
-        return code.charAt(0) == 'R'
-            && Character.isDigit(code.charAt(1))
-            && Character.isDigit(code.charAt(2))
-            && Character.isUpperCase(code.charAt(3));
-    }
-
-    static int getMembersEnrolled() {
-        return count;
+    public String confirmDelivery(String signature) {
+        return confirmDelivery() + ", signed by " + signature;
     }
 }
 
-class FacultyMember extends LibraryMember {
+class ParcelNote extends DeliveryNote {
 
-    FacultyMember(int limit, String department) {
-        super(limit);
+    private String trackingId;
+
+    public ParcelNote(String trackingId) {
+        this.trackingId = trackingId;
+    }
+
+    @Override
+    public String confirmDelivery() {
+        return "Parcel " + trackingId + " delivered";
+    }
+}
+
+class LetterNote extends DeliveryNote {
+
+    private String trackingId;
+
+    public LetterNote(String trackingId) {
+        this.trackingId = trackingId;
+    }
+
+    @Override
+    public String confirmDelivery() {
+        return "Letter " + trackingId + " delivered";
     }
 }
 
 public class M5 {
 
-    static String processNightlyAudit(LibraryMember[] members) {
-
-        int processed = 0;
-        int nullSkipped = 0;
-        int faculty = 0;
-        int regular = 0;
-
-        for (LibraryMember m : members) {
-
-            if (m == null) {
-                nullSkipped++;
-                continue;
-            }
-
-            processed++;
-
-            if (m instanceof FacultyMember)
-                faculty++;
-            else
-                regular++;
+    static void logAll(DeliveryNote[] notes) {
+        for (DeliveryNote note : notes) {
+            System.out.println(note.confirmDelivery());
         }
-
-        return processed + " processed | " +
-               nullSkipped + " null skipped | " +
-               faculty + " faculty | " +
-               regular + " regular";
     }
 
     public static void main(String[] args) {
 
-        LibraryMember m1 = new LibraryMember(3);
+        ParcelNote p = new ParcelNote("TRK-1");
 
-        System.out.println(m1.memberNumber);
-        System.out.println(LibraryMember.getMembersEnrolled());
-
-        System.out.println(
-            LibraryMember.isValidRenewalCode("R12A")
-        );
+        System.out.println(p.confirmDelivery());
 
         System.out.println(
-            LibraryMember.isValidRenewalCode("R1A")
+            p.confirmDelivery("J. Smith")
         );
 
-        System.out.println(
-            LibraryMember.isValidRenewalCode("X12A")
-        );
+        DeliveryNote ref = p;
 
-        m1.borrowBook();
-        m1.borrowBook("Fiction");
-
-        System.out.println(m1.getBooksBorrowed());
-
-        LibraryMember[] members = {
-            new FacultyMember(5, "Physics"),
-            null,
-            new LibraryMember(3)
-        };
-
-        System.out.println(
-            processNightlyAudit(members)
-        );
+        logAll(new DeliveryNote[]{
+            ref,
+            new LetterNote("TRK-2")
+        });
     }
 }

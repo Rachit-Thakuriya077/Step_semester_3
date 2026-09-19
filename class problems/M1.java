@@ -1,67 +1,57 @@
-class LibraryMember {
-    String memberId;
-    int borrowLimit, booksBorrowed;
 
-    LibraryMember(String id, int limit) {
-        if (id == null || id.trim().length() < 4)
-            throw new IllegalArgumentException();
+abstract class Toy {
+    private static int counter = 1000;
 
-        if (limit <= 0)
-            throw new IllegalArgumentException();
+    private final String toyId;
+    protected String name;
 
-        memberId = id;
-        borrowLimit = limit;
+    public Toy(String name) {
+        this.name = name;
+        counter++;
+        this.toyId = "TOY-" + counter;
     }
 
-    void borrowBook() {
-        if (booksBorrowed < borrowLimit)
-            booksBorrowed++;
-    }
+    public abstract String makeSound();
 
-    int getBooksBorrowed() {
-        return booksBorrowed;
-    }
-
-    static String enrollBatch(String[] ids, int limit) {
-        int enrolled = 0, rejected = 0;
-
-        for (String id : ids) {
-            try {
-                new LibraryMember(id, limit);
-                enrolled++;
-            } catch (IllegalArgumentException e) {
-                rejected++;
-            }
-        }
-
-        return "Enrolled: " + enrolled + " | Rejected: " + rejected;
+    public String getToyId() {
+        return toyId;
     }
 }
 
-class StudentMember extends LibraryMember {
-    String course;
+class ToyCar extends Toy {
 
-    StudentMember(String id, int limit, String course) {
-        super(id, limit);
-        this.course = course;
+    public ToyCar(String name) {
+        super(name);
+    }
+
+    @Override
+    public String makeSound() {
+        return name + ": Vroom vroom!";
+    }
+}
+
+class ToyRobot extends Toy {
+
+    public ToyRobot(String name) {
+        super(name);
+    }
+
+    @Override
+    public String makeSound() {
+        return name + ": Beep boop!";
     }
 }
 
 public class M1 {
     public static void main(String[] args) {
 
-        try {
-            new LibraryMember("LB1", 3);
-        } catch (IllegalArgumentException e) {
-            System.out.println("construction rejected");
-        }
+        ToyCar c = new ToyCar("Speedster");
+        ToyRobot r = new ToyRobot("Bolt");
 
-        StudentMember s = new StudentMember("STU10", 3, "CSE");
-        s.borrowBook();
-        s.borrowBook();
-        System.out.println(s.getBooksBorrowed());
+        System.out.println(c.makeSound());
+        System.out.println(r.makeSound());
 
-        String[] ids = {"STU1", "LB1", "STU2", " ", "STU3"};
-        System.out.println(LibraryMember.enrollBatch(ids, 3));
+        System.out.println(c.getToyId());
+        System.out.println(r.getToyId());
     }
 }

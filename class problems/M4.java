@@ -1,67 +1,54 @@
-class LibraryMember {
-    int borrowed;
 
-    LibraryMember(String id, int limit) {}
+abstract class KitchenTool {
 
-    void borrowBook() {
-        borrowed++;
+    private int speedLevel = 1;
+
+    public abstract String prepare();
+
+    public int getSpeedLevel() {
+        return speedLevel;
     }
 
-    int getBooksBorrowed() {
-        return borrowed;
-    }
-
-    String displayInfo() {
-        return "General | Books: " + borrowed;
+    public void setSpeedLevel(int speedLevel) {
+        if (speedLevel >= 1 && speedLevel <= 5) {
+            this.speedLevel = speedLevel;
+        }
     }
 }
 
-class StudentMember extends LibraryMember {
-    String course;
+interface Washable {
+    String clean();
+}
 
-    StudentMember(String id, int limit, String course) {
-        super(id, limit);
-        this.course = course;
+class Blender extends KitchenTool implements Washable {
+
+    public Blender() {
+        super();
     }
 
     @Override
-    String displayInfo() {
-        return "Student | Course: " + course +
-               " | Books: " + borrowed;
+    public String prepare() {
+        return "Blending at speed " + getSpeedLevel();
+    }
+
+    @Override
+    public String clean() {
+        return "Blender rinsed and dried";
     }
 }
 
 public class M4 {
-
-    static String batchPrint(LibraryMember[] members) {
-
-        StringBuilder sb = new StringBuilder();
-
-        for (LibraryMember m : members) {
-
-            sb.append(m.displayInfo());
-
-            if (m instanceof StudentMember) {
-                StudentMember s = (StudentMember)m;
-
-                sb.append(" [Course via downcast: ")
-                  .append(s.course)
-                  .append("]");
-            }
-
-            sb.append(" | ");
-        }
-
-        return sb.toString();
-    }
-
     public static void main(String[] args) {
 
-        LibraryMember[] members = {
-            new LibraryMember("LB5", 3),
-            new StudentMember("STU6", 3, "ECE")
-        };
+        Blender b = new Blender();
 
-        System.out.println(batchPrint(members));
+        b.setSpeedLevel(3);
+        System.out.println(b.getSpeedLevel());
+
+        b.setSpeedLevel(9);
+        System.out.println(b.getSpeedLevel());
+
+        System.out.println(b.prepare());
+        System.out.println(b.clean());
     }
 }

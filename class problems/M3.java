@@ -1,48 +1,41 @@
-import java.util.Arrays;
 
-class LibraryMember {
-    private int[] history = new int[10];
-    private int count;
+abstract class Instrument {
 
-    protected void chargeFine(int amount) {
-        history[count++] = amount;
-    }
-
-    int[] getFineHistory() {
-        return Arrays.copyOf(history, count);
-    }
-
-    int getTotalFine() {
-        int total = 0;
-
-        for (int i = 0; i < count; i++)
-            total += history[i];
-
-        return total;
-    }
+    public abstract String play();
 }
 
-class StudentMember extends LibraryMember {
+class StringInstrument extends Instrument {
+
+    public StringInstrument() {
+        super();
+    }
 
     @Override
-    protected void chargeFine(int amount) {
-        super.chargeFine(amount / 2);
+    public String play() {
+        return "Strumming the strings";
     }
 }
 
-public class M3{
+class Violin extends StringInstrument {
+
+    public Violin() {
+        super();
+    }
+
+    @Override
+    public String play() {
+        return super.play()
+                + ", with a bow drawn across four strings";
+    }
+}
+
+public class M3 {
     public static void main(String[] args) {
 
-        StudentMember s = new StudentMember();
+        StringInstrument s = new StringInstrument();
+        Violin v = new Violin();
 
-        s.chargeFine(100);
-        System.out.println(s.getTotalFine());
-
-        int[] history = s.getFineHistory();
-        history[0] = 999;
-
-        System.out.println(
-            Arrays.toString(s.getFineHistory())
-        );
+        System.out.println(s.play());
+        System.out.println(v.play());
     }
 }
